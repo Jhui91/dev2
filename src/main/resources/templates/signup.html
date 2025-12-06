@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp - SmartPick</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/images/favicon/apple-touch-icon.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon/favicon-32x32.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon/favicon-16x16.png}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@100..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/libs/simplebar/dist/simplebar.min.css}">
+
+    <noscript>
+        <style>
+            .simplebar-content-wrapper { scrollbar-width: auto; -ms-overflow-style: auto; }
+            .simplebar-content-wrapper::-webkit-scrollbar, .simplebar-hide-scrollbar::-webkit-scrollbar { display: initial; width: initial; height: initial; }
+        </style>
+    </noscript>
+
+    <link rel="stylesheet" th:href="@{/libs/jarallax/dist/jarallax.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.min.css}">
+    <link id="templateColorScheme" rel="stylesheet" th:href="@{/css/color-schemes/tc_red.css}">
+    <link rel="stylesheet" th:href="@{/css/preloader.css}">
+
+    <style>
+        #company-fields { display: none; }
+    </style>
+
+    <script th:src="@{/js/preloader.js}"></script>
+</head>
+
+<body>
+
+<div class="preloader">
+    <div class="loader">
+        <div class="loader-inner ball-scale-multiple">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+
+<header th:replace="~{fragments/header :: main-header}"></header>
+
+<div class="breadcrumb-style-2 position-relative z-1 py-1" style="--bs-bg-opacity: 0.9">
+    <div class="container d-lg-flex position-relative z-1 justify-content-between align-items-center py-2 py-lg-3">
+        <div class="order-lg-1 pe-lg-4 text-center text-lg-start">
+            <h1 class="h3 mb-3 mb-lg-0">SignUp</h1>
+        </div>
+        <div class="order-lg-2 mb-0">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb flex-lg-nowrap justify-content-center justify-content-lg-start m-0 fs-sm">
+                    <li class="breadcrumb-item">
+                        <a class="link-body-emphasis text-nowrap link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-50-hover" href="./index.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home mt-n1-sm me-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M5 12l-2 0l9 -9l9 9l-2 0"></path>
+                                <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path>
+                                <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"></path>
+                            </svg>Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item text-nowrap active" aria-current="page">Login</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<main>
+    <div class="bg-body-tertiary py-5">
+        <div class="container py-5 p-0">
+            <div class="row py-5">
+                <div class="col-lg-5 col-md-8 col-sm-10 bg-body p-4 rounded shadow-sm mx-auto">
+
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold">회원가입</h3>
+                        <p class="text-muted small">스마트픽의 멤버가 되어보세요</p>
+                    </div>
+
+                    <div th:if="${errorMessage}" class="alert alert-danger text-center p-2 small mb-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${errorMessage}">에러 발생</span>
+                    </div>
+
+                    <form action="/auth/signup" method="post">
+
+                        <div class="mb-4 text-center">
+                            <label class="form-label fw-bold d-block mb-2">가입 유형</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="role" id="roleCustomer" value="CUSTOMER" checked onclick="toggleRole('CUSTOMER')">
+                                <label class="btn btn-outline-dark w-50" for="roleCustomer">일반 회원 (구매)</label>
+
+                                <input type="radio" class="btn-check" name="role" id="roleOwner" value="OWNER" onclick="toggleRole('OWNER')">
+                                <label class="btn btn-outline-dark w-50" for="roleOwner">기업 회원 (판매)</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            <div class="input-group">
+                                <input type="email" class="form-control custom-color" id="email" name="email"
+                                       placeholder="name@example.com" required>
+                                <button type="button" class="btn btn-secondary" onclick="checkEmail()">중복 확인</button>
+                            </div>
+                            <div id="emailFeedback" class="form-text small mt-1"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Password</label>
+                            <input type="password" class="form-control custom-color" name="password" placeholder="비밀번호 입력" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Full Name</label>
+                            <input type="text" class="form-control custom-color" name="name" placeholder="실명 입력" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Phone Number</label>
+                            <input type="text" class="form-control custom-color" name="phone" placeholder="010-1234-5678" required>
+                        </div>
+
+                        <div id="company-fields" class="p-3 mb-4 bg-light rounded border">
+                            <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">사업자 정보</h6>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">상호명</label>
+                                <input type="text" id="businessName" name="businessName" class="form-control custom-color" placeholder="스마트 중고차">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">사업자 등록번호</label>
+                                <div class="input-group">
+                                    <input type="text" id="businessNumber" name="businessNumber" class="form-control custom-color" placeholder="000-00-00000">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="checkBusinessNumber()">확인</button>
+                                </div>
+                                <div id="businessFeedback" class="form-text small mt-1"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">사업장 주소</label>
+                                <input type="text" id="address" name="address" class="form-control custom-color" placeholder="서울시 강남구...">
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" id="submitBtn" class="btn btn-success text-uppercase fw-bold py-2 custom-color color-override" disabled>
+                                Sign Up
+                            </button>
+                        </div>
+
+                        <span class="d-block text-center fs-5 fw-bold my-3">OR</span>
+
+                        <div class="d-grid mb-3">
+                            <a href="/oauth2/authorization/kakao" class="btn btn-warning w-100 d-flex justify-content-center align-items-center fw-bold py-2">
+                                <img th:src="@{/images/kakao_logo.png}" width="20" class="me-2" onerror="this.style.display='none'"/>
+                                카카오로 3초 만에 시작하기
+                            </a>
+                        </div>
+                    </form>
+
+                    <div class="text-center mb-3">
+                        <p class="mb-0 mt-3">
+                            Already have an account ? <a href="/login" class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover fw-bold">Login</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: main-footer}"></footer>
+
+<script th:src="@{/libs/jquery/dist/jquery.min.js}"></script>
+<script th:src="@{/libs/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/libs/simplebar/dist/simplebar.min.js}"></script>
+<script th:src="@{/libs/jarallax/dist/jarallax.min.js}"></script>
+<script th:src="@{/js/script.min.js}"></script>
+
+<script>
+    // 1. 역할 선택에 따른 입력폼 표시/숨김
+    function toggleRole(role) {
+        const companyFields = document.getElementById('company-fields');
+        const businessNameInput = document.getElementById('businessName');
+        const businessNumberInput = document.getElementById('businessNumber');
+        const addressInput = document.getElementById('address');
+
+        if (role === 'OWNER') {
+            companyFields.style.display = 'block';
+            businessNameInput.required = true;
+            businessNumberInput.required = true;
+            if(addressInput) addressInput.required = true;
+        } else {
+            companyFields.style.display = 'none';
+            businessNameInput.required = false;
+            businessNumberInput.required = false;
+            if(addressInput) addressInput.required = false;
+            // 값 초기화
+            businessNameInput.value = '';
+            businessNumberInput.value = '';
+            if(addressInput) addressInput.value = '';
+        }
+    }
+
+    // 2. 이메일 중복 검사
+    function checkEmail() {
+        const emailInput = document.getElementById('email');
+        const feedback = document.getElementById('emailFeedback');
+        const submitBtn = document.getElementById('submitBtn');
+        const email = emailInput.value;
+
+        if (!email) { alert("이메일을 입력해주세요."); return; }
+
+        fetch('/api/check-email?email=' + email)
+            .then(response => response.json())
+            .then(isDuplicate => {
+                if (isDuplicate) {
+                    feedback.style.color = '#dc3545'; // red
+                    feedback.textContent = "이미 사용 중인 이메일입니다.";
+                    submitBtn.disabled = true;
+                    emailInput.classList.add('is-invalid');
+                    emailInput.classList.remove('is-valid');
+                } else {
+                    feedback.style.color = '#198754'; // green
+                    feedback.textContent = "사용 가능한 이메일입니다.";
+                    submitBtn.disabled = false;
+                    emailInput.classList.add('is-valid');
+                    emailInput.classList.remove('is-invalid');
+                }
+            })
+            .catch(err => console.error(err));
+    }
+
+    // 이메일 수정 시 버튼 잠금
+    document.getElementById('email').addEventListener('input', function() {
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('emailFeedback').textContent = "";
+        this.classList.remove('is-valid', 'is-invalid');
+    });
+
+    // 3. 사업자 번호 중복 검사
+    function checkBusinessNumber() {
+        const businessInput = document.getElementById('businessNumber');
+        const feedback = document.getElementById('businessFeedback');
+        const number = businessInput.value;
+
+        if (!number) { alert("번호를 입력해주세요."); return; }
+
+        fetch('/api/check-business?number=' + number)
+            .then(response => response.json())
+            .then(isDuplicate => {
+                if (isDuplicate) {
+                    feedback.style.color = '#dc3545';
+                    feedback.textContent = "이미 등록된 번호입니다.";
+                    businessInput.classList.add('is-invalid');
+                } else {
+                    feedback.style.color = '#198754';
+                    feedback.textContent = "사용 가능한 번호입니다.";
+                    businessInput.classList.add('is-valid');
+                }
+            })
+            .catch(err => console.error(err));
+    }
+
+    // 사업자 번호 수정 시 초기화
+    document.getElementById('businessNumber').addEventListener('input', function() {
+         document.getElementById('businessFeedback').textContent = "";
+         this.classList.remove('is-valid', 'is-invalid');
+    });
+</script>
+
+</body>
+</html>
