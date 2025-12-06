@@ -1,0 +1,40 @@
+[Unit]
+Description=Used Car Trading Platform Spring Boot Application
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/opt/trading-app
+
+# Java 실행 명령
+ExecStart=/usr/bin/java -jar \
+    -Xms512m \
+    -Xmx1024m \
+    -XX:+UseG1GC \
+    -XX:MaxGCPauseMillis=200 \
+    -XX:+UseStringDeduplication \
+    -Dspring.profiles.active=prod \
+    -Dspring.config.location=/opt/trading-app/application-prod.properties \
+    -Djava.security.egd=file:/dev/./urandom \
+    /opt/trading-app/app.jar
+
+# 종료 시그널
+SuccessExitStatus=143
+
+# 로그 설정
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=trading-app
+
+# 재시작 정책
+Restart=always
+RestartSec=10
+
+# 리소스 제한 (선택)
+# LimitNOFILE=65535
+# LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target
